@@ -1,8 +1,10 @@
 'use client';
 
+import { DirEntry } from '@/app/_lib/model';
+
 type FsItemProps = {
-  dirEntry: string;
-  onClick?: (dirEntry: string) => void;
+  dirEntry: DirEntry;
+  onClick?: (dirEntry: DirEntry) => void;
 };
 
 export const FsItem: React.FC<FsItemProps> = ({ dirEntry, onClick }) => {
@@ -12,7 +14,7 @@ export const FsItem: React.FC<FsItemProps> = ({ dirEntry, onClick }) => {
         if (onClick) onClick(dirEntry);
       }}
     >
-      {dirEntry}
+      {dirEntry.name}
     </li>
   );
 };
