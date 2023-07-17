@@ -1,20 +1,20 @@
 import { config } from '@/app/_lib/config';
-import { readdir } from '@/app/_lib/fs';
 import { FsItemList } from '@/app/_feature/FsItemList';
+import { NextPage } from 'next';
 
-const Home = async () => {
-  const files = await readdir(config.rootDir).catch((err) => {
-    console.error(err);
+const Home: NextPage = async () => {
+  const files = await fetch('http://localhost/v1/dirEntries', {
+    method: 'GET',
+    body: JSON.stringify({ dir: config.rootDir }),
   });
-  if (!files) {
-    return <div>Something went wrong</div>;
-  }
+
+  console.log(files.body);
 
   return (
     <div>
       <h1>Home</h1>
 
-      <FsItemList dirEntries={files.map((f) => `${config.rootDir}/${f}`)} />
+      {/* <FsItemList dirEntries={files.map((f) => `${config.rootDir}/${f}`)} /> */}
     </div>
   );
 };
