@@ -3,6 +3,7 @@ module fs-server
 go 1.20
 
 require (
+	github.com/dhowden/tag v0.0.0-20230630033851-978a0926ee25
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/httplog v0.3.0
