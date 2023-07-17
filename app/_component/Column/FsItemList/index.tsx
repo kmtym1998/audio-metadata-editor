@@ -8,13 +8,10 @@ import { useState } from 'react';
 
 type FsItemListProps = {
   rootDirEntries: DirEntry[];
-  parentDirEntry?: DirEntry;
 };
 
-export const FsItemList: React.FC<FsItemListProps> = ({
-  rootDirEntries,
-  parentDirEntry,
-}) => {
+// FIXME: クリック時のリセット処理がうまくいっていない
+export const FsItemList: React.FC<FsItemListProps> = ({ rootDirEntries }) => {
   const [selectedDirEntry, setSelectedDirEntry] = useState<
     { children?: DirEntry[]; parent?: DirEntry } | undefined
   >(undefined);
@@ -45,10 +42,7 @@ export const FsItemList: React.FC<FsItemListProps> = ({
       </ul>
 
       {selectedDirEntry && (
-        <FsItemList
-          parentDirEntry={selectedDirEntry?.parent}
-          rootDirEntries={selectedDirEntry?.children || []}
-        />
+        <FsItemList rootDirEntries={selectedDirEntry?.children || []} />
       )}
     </>
   );
