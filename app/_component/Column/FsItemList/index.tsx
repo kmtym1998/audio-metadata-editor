@@ -8,20 +8,18 @@ import { useState } from 'react';
 
 type FsItemListProps = {
   rootDirEntries: DirEntry[];
-  onReset?: (dirEntry: DirEntry) => void;
+  parentDirEntry?: DirEntry;
 };
 
 export const FsItemList: React.FC<FsItemListProps> = ({
   rootDirEntries,
-  onReset,
+  parentDirEntry,
 }) => {
-  const [selectedDirEntries, setSelectedDirEntries] = useState<
-    DirEntry[] | undefined
+  const [selectedDirEntry, setSelectedDirEntry] = useState<
+    { children?: DirEntry[]; parent?: DirEntry } | undefined
   >(undefined);
 
   const handleClickItem = async (dirEntry: DirEntry) => {
-    onReset?.(dirEntry);
-
     const dirEntries = await sendGetRequest<DirEntry[]>('/v1/dirEntries', {
       dir: dirEntry.fullPath,
     }).catch((e) => {
@@ -30,12 +28,15 @@ export const FsItemList: React.FC<FsItemListProps> = ({
 
     if (!dirEntries) return;
 
-    setSelectedDirEntries(dirEntries);
+    setSelectedDirEntry({
+      parent: dirEntry,
+      children: dirEntries,
+    });
   };
 
   return (
     <>
-      <ul style={{ minWidth: 300 }}>
+      <ul style={{ minWidth: 360 }}>
         {rootDirEntries.map((d) => {
           if (isExcludedFileOrDir(d.name)) return null;
 
@@ -43,12 +44,10 @@ export const FsItemList: React.FC<FsItemListProps> = ({
         })}
       </ul>
 
-      {selectedDirEntries && (
+      {selectedDirEntry && (
         <FsItemList
-          rootDirEntries={selectedDirEntries}
-          onReset={() => {
-            console.log(selectedDirEntries);
-          }}
+          parentDirEntry={selectedDirEntry?.parent}
+          rootDirEntries={selectedDirEntry?.children || []}
         />
       )}
     </>
