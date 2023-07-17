@@ -1,6 +1,7 @@
 'use client';
 
 import { DirEntry } from '@/app/_lib/model';
+import Link from 'next/link';
 
 type FsItemProps = {
   dirEntry: DirEntry;
@@ -14,7 +15,13 @@ export const FsItem: React.FC<FsItemProps> = ({ dirEntry, onClick }) => {
         if (onClick) onClick(dirEntry);
       }}
     >
-      {dirEntry.name}
+      {dirEntry.isDir ? (
+        `📁 ${dirEntry.name}`
+      ) : (
+        <Link href={`/item/detail?fullPath=${dirEntry.fullPath}`}>
+          {`📄 ${dirEntry.name}`}
+        </Link>
+      )}
     </li>
   );
 };

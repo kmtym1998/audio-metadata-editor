@@ -4,14 +4,19 @@ import { FsItem } from '@/app/_component/Column/FsItem';
 import { isExcludedFileOrDir } from '@/app/_lib/config';
 import { DirEntry } from '@/app/_lib/model';
 import { sendGetRequest } from '@/app/_lib/request';
+import { on } from 'events';
 import { useState } from 'react';
 
 type FsItemListProps = {
   rootDirEntries: DirEntry[];
+  onReset?: () => void;
 };
 
 // FIXME: クリック時のリセット処理がうまくいっていない
-export const FsItemList: React.FC<FsItemListProps> = ({ rootDirEntries }) => {
+export const FsItemList: React.FC<FsItemListProps> = ({
+  rootDirEntries,
+  onReset,
+}) => {
   const [selectedDirEntry, setSelectedDirEntry] = useState<
     { children?: DirEntry[]; parent?: DirEntry } | undefined
   >(undefined);
