@@ -13,7 +13,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main>{children}</main>
+        <main style={{ minHeight: '100vh' }}>{children}</main>
       </body>
     </html>
   );

@@ -2,7 +2,7 @@ import { config } from '@/app/_lib/config';
 import { NextPage } from 'next';
 import { sendGetRequest } from '@/app/_lib/request';
 import { DirEntry } from '@/app/_lib/model';
-import { ColumnLayout } from '@/app/_component/layout/Column';
+import { FsItemList } from '@/app/_component/Column/FsItemList';
 
 const Home: NextPage = async () => {
   const dirEntries = await sendGetRequest<DirEntry[]>('/v1/dirEntries', {
@@ -17,7 +17,9 @@ const Home: NextPage = async () => {
     <div>
       <h1>{config.rootDir}</h1>
 
-      <ColumnLayout rootDirEntries={dirEntries} />
+      <div style={{ display: 'flex', overflow: 'scroll' }}>
+        <FsItemList rootDirEntries={dirEntries} />
+      </div>
     </div>
   );
 };
