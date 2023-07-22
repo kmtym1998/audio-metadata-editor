@@ -50,6 +50,15 @@ func main() {
 
 			util.WriteJSON(w, http.StatusOK, resp)
 		})
+
+		v1Router.Patch("/files/{fullPath}", func(w http.ResponseWriter, r *http.Request) {
+			if err := handlePatchItem(w, r); err != nil {
+				http.Error(w, err.Error(), err.Code)
+				return
+			}
+
+			util.WriteJSON(w, http.StatusOK, map[string]string{"message": "success"})
+		})
 	})
 
 	l.Info().Msg("server is running...")
@@ -107,6 +116,7 @@ func handleGetItem(w http.ResponseWriter, r *http.Request) (*model.FileDetail, *
 			}
 		}
 	}
+	defer f.Close()
 
 	var audioMetadata *model.AudioMetadata
 	tag, err := tag.ReadFrom(f)
@@ -151,4 +161,30 @@ func handleGetItem(w http.ResponseWriter, r *http.Request) (*model.FileDetail, *
 		ModTime:       fileInfo.ModTime().String(),
 		AudioMetadata: audioMetadata,
 	}, nil
+}
+
+func handlePatchItem(w http.ResponseWriter, r *http.Request) *util.AppError {
+	encodedPath := chi.URLParam(r, "fullPath")
+	decodedPath, err := base64.StdEncoding.DecodeString(encodedPath)
+	if err != nil {
+		return &util.AppError{
+			Code:    http.StatusBadRequest,
+			Message: fmt.Sprintf("'%s' is invalid fullPath", encodedPath),
+		}
+	}
+
+	f, err := os.Open(string(decodedPath))
+	if err != nil {
+		if os.IsNotExist(err) {
+			return &util.AppError{
+				Code:    http.StatusNotFound,
+				Message: fmt.Sprintf("'%s' is not found", string(decodedPath)),
+			}
+		}
+
+		return util.NewInternalServerError(err)
+	}
+	defer f.Close()
+
+	return nil
 }
